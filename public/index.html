@@ -1,0 +1,101 @@
+<!-- public/index.html -->
+
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+        <title>Ukraine Pet Swap</title>
+
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+
+        <!-- JQuery -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+        <!-- Vue.js -->
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.24/vue.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.7.0/vue-resource.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h2>Ukraine Pet Swap</h2>
+                    <ul class="list-group">
+                        <li class="list-group-item" v-for="pet in pets">
+                            {{ pet.name }} the {{ pet.type }}
+                            <span class="pull-right">
+                                <button class="btn btn-xs btn-danger" v-on:click="deletePet($index)">
+                                    <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                </button>
+                            </span>
+                        </li>
+                    </ul>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="New Pet Name" v-model="newPet.name">
+                        <input type="text" class="form-control" placeholder="Type of Animal" v-model="newPet.type">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="button" v-on:click="createPet">Create</button>
+                        </span>
+                    </div><!-- /input-group -->
+                </div>
+            </div>
+        </div>
+
+
+        <script>
+            new Vue({
+                el: 'body',
+
+                data: {
+                    pets: [],
+                    newPet: {}
+                },
+
+          // This is run whenever the page is loaded to make sure we have a current pet list
+                created: function() {
+        // Use the vue-resource $http client to fetch data from the /pets route
+                    this.$http.get('/pets').then(function(response) {
+                        this.pets = response.data.items ? response.data.items : []
+                    })
+                },
+
+                methods: {
+                    createPet: function() {
+                        if (!$.trim(this.newPet.name) && !$.trim(this.newPet.type)) {
+                            this.newPet = {}
+                            return
+                        }
+
+             // Post the new pet to the /pets route using the $http client
+                        this.$http.put('/pets', this.newPet).success(function(response) {
+                            this.newPet.id = response.created
+                            this.pets.push(this.newPet)
+                            console.log("Pet created!")
+                            console.log(this.newPet)
+                            this.newPet = {}
+                        }).error(function(error) {
+                            console.log(error)
+                        });
+                    },
+
+                    deletePet: function(index) {
+             // Use the $http client to delete a pet by its id
+                        this.$http.delete('/pets/' + this.pets[index].id).success(function(response) {
+                            this.pets.splice(index, 1)
+                            console.log("Pet deleted!")
+                        }).error(function(error) {
+                            console.log(error)
+                        })
+                    }
+                }
+            })
+        </script>   
+    </body>
+</html>

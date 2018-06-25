@@ -1,3 +1,5 @@
 storage.db
 
 .vscode*
+
+utils/info.go

@@ -1,13 +1,16 @@
 package utils
 
-import "database/sql"
+import (
+	"database/sql"
+	"fmt"
+)
 
 // InitDB initializes database
 func InitDB() *sql.DB {
 
-	// TODO: move uid, pwd ot separate file ========================================================================
-	db, err := sql.Open("postgres", "user=petsuser password=La0ban dbname=pets sslmode=disable")
-	// =============================================================================================================
+	credentials := GetInfo()
+	serverInfo := fmt.Sprintf("user=%v password=%v dbname=pets sslmode=disable", credentials.User, credentials.Pass)
+	db, err := sql.Open("postgres", serverInfo)
 
 	// check for db errors and exit
 	if err != nil {

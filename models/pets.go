@@ -18,6 +18,7 @@ type PetCollection struct {
 
 // GetPets gets all pets from database
 func GetPets(db *sql.DB) PetCollection {
+	print("in GetPets()")
 	sql := "SELECT * FROM pets"
 
 	rows, err := db.Query(sql)
@@ -43,7 +44,8 @@ func GetPets(db *sql.DB) PetCollection {
 
 // PutPet puts a pet into database
 func PutPet(db *sql.DB, name string, animalType string) (int64, error) {
-	sql := "INSERT INTO pets(name, animal_type) VALUES(?, ?)"
+	print("in PutPet()")
+	sql := "INSERT INTO pets(name, animal_type) VALUES($1, $2)"
 
 	stmt, err := db.Prepare(sql)
 
@@ -64,7 +66,8 @@ func PutPet(db *sql.DB, name string, animalType string) (int64, error) {
 
 // DeletePet deletes a single pet from the database
 func DeletePet(db *sql.DB, id int) (int64, error) {
-	sql := "DELETE FROM pets WHERE id = ?"
+	print("in DeletePet()")
+	sql := "DELETE FROM pets WHERE pet_id = $1"
 
 	stmt, err := db.Prepare(sql)
 	if err != nil {

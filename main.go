@@ -7,18 +7,18 @@ import (
 
 	"github.com/gzr7702/pets/utils"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/lib/pq"
 )
 
 func main() {
 	// paths
 	appRoot := "/home/rob/go/src/github.com/gzr7702/pets"
 
-	dbPath := path.Join(appRoot, "storage.db")
+	//dbPath := path.Join(appRoot, "storage.db")
 	indexPath := path.Join(appRoot, "assets/index.html")
 	jsPath := path.Join(appRoot, "assets/js/app.js")
 
-	db := utils.InitDB(dbPath)
+	db := utils.InitDB()
 	utils.Migrate(db)
 
 	// new instance of echo

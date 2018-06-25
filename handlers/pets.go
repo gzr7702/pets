@@ -32,7 +32,8 @@ func PutPet(db *sql.DB) echo.HandlerFunc {
 		id, err := models.PutPet(db, pet.Name, pet.Type)
 
 		// return JSON if successful
-		if err == nil {
+		// LastInertId available error is a bug in postgres driver. Ignore it
+		if err == nil || err.Error() == "no LastInsertId available" {
 			return c.JSON(http.StatusCreated, H{
 				"created": id,
 			})

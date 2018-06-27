@@ -28,15 +28,19 @@ func InitDB() *sql.DB {
 // Migrate migrates teh database
 func Migrate(db *sql.DB) {
 	sql := `
+	CREATE TABLE IF NOT EXISTS owners(
+			owner_id SERIAL PRIMARY KEY,
+			name VARCHAR (50) NOT NULL
+		);
+
 	CREATE TABLE IF NOT EXISTS pets(
 			pet_id SERIAL PRIMARY KEY,
+			owner_id INTEGER REFERENCES owners(owner_id),
 			name VARCHAR (50) NOT NULL,
 			animal_type VARCHAR (100) NOT NULL
 		);
-	`
 
-	// in go, underbar is used to assign an unused var
-	print("execute\n")
+	`
 	_, err := db.Exec(sql)
 
 	// exit if something goes wrong w/sql statement

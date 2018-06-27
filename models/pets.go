@@ -2,23 +2,22 @@ package models
 
 import (
 	"database/sql"
-
-	_ "github.com/mattn/go-sqlite3"
 )
 
 type Pet struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
-	Type string `json:"type"`
+	ID      int    `json:"id"`
+	Name    string `json:"name"`
+	Type    string `json:"type"`
+	OwnerID int    `json:"ownerId"`
 }
 
 type PetCollection struct {
+	// TODO: change this to pets from items =============================================
 	Pets []Pet `json:"items"`
 }
 
 // GetPets gets all pets from database
 func GetPets(db *sql.DB) PetCollection {
-	print("in GetPets()")
 	sql := "SELECT * FROM pets"
 
 	rows, err := db.Query(sql)
@@ -32,7 +31,7 @@ func GetPets(db *sql.DB) PetCollection {
 	result := PetCollection{}
 	for rows.Next() {
 		pet := Pet{}
-		err2 := rows.Scan(&pet.ID, &pet.Name, &pet.Type)
+		err2 := rows.Scan(&pet.ID, &pet.OwnerID, &pet.Name, &pet.Type)
 
 		if err2 != nil {
 			panic(err2)
@@ -43,9 +42,8 @@ func GetPets(db *sql.DB) PetCollection {
 }
 
 // PutPet puts a pet into database
-func PutPet(db *sql.DB, name string, animalType string) (int64, error) {
-	print("in PutPet()")
-	sql := "INSERT INTO pets(name, animal_type) VALUES($1, $2)"
+func PutPet(db *sql.DB, name string, animalType string, ownerID int) (int64, error) {
+	sql := "INSERT INTO pets(name, animal_type, owner_id) VALUES($1, $2, $3)"
 
 	stmt, err := db.Prepare(sql)
 
@@ -55,7 +53,12 @@ func PutPet(db *sql.DB, name string, animalType string) (int64, error) {
 
 	defer stmt.Close()
 
-	result, err2 := stmt.Exec(name, animalType)
+	// if owner doesn't exist, make the store the owner
+	if ownerID == 0 {
+		ownerID = 1
+	}
+
+	result, err2 := stmt.Exec(name, animalType, ownerID)
 
 	if err2 != nil {
 		panic(err2)
@@ -66,7 +69,6 @@ func PutPet(db *sql.DB, name string, animalType string) (int64, error) {
 
 // DeletePet deletes a single pet from the database
 func DeletePet(db *sql.DB, id int) (int64, error) {
-	print("in DeletePet()")
 	sql := "DELETE FROM pets WHERE pet_id = $1"
 
 	stmt, err := db.Prepare(sql)

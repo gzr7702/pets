@@ -10,26 +10,24 @@ import (
 	"github.com/labstack/echo"
 )
 
-type H map[string]interface{}
-
-// GetPets endpoint
-func GetPets(db *sql.DB) echo.HandlerFunc {
+// GetOwners endpoint
+func GetOwners(db *sql.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return c.JSON(http.StatusOK, models.GetPets(db))
+		return c.JSON(http.StatusOK, models.GetOwners(db))
 	}
 }
 
-// PutPet endpoint
-func PutPet(db *sql.DB) echo.HandlerFunc {
+// PutOwner endpoint
+func PutOwner(db *sql.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		// create a new pet
-		var pet models.Pet
+		// create a new owner
+		var owner models.Owner
 
-		// map incoming JSON to new pet
-		c.Bind(&pet)
+		// map incoming JSON to new owner
+		c.Bind(&owner)
 
-		//Add a new pet using model
-		id, err := models.PutPet(db, pet.Name, pet.Type, pet.OwnerID)
+		//Add a new owner using model
+		id, err := models.PutOwner(db, owner.Name)
 
 		// return JSON if successful
 		// LastInertId available error is a bug in postgres driver. Ignore it
@@ -45,12 +43,12 @@ func PutPet(db *sql.DB) echo.HandlerFunc {
 	}
 }
 
-// DeletePet endpoint
-func DeletePet(db *sql.DB) echo.HandlerFunc {
+// DeleteOwner endpoint
+func DeleteOwner(db *sql.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		id, _ := strconv.Atoi(c.Param("id"))
-		// use model to delete pet
-		_, err := models.DeletePet(db, id)
+		// use model to delete owner
+		_, err := models.DeleteOwner(db, id)
 		// return JSON response if successful
 		if err == nil {
 			return c.JSON(http.StatusOK, H{

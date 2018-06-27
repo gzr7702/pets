@@ -4,15 +4,20 @@ new Vue({
     el: 'body',
 
     data: {
+        selected: "Pet store",
+        owners: [],
         pets: [],
         newPet: {}
     },
 
-// This is run whenever the page is loaded to make sure we have a current pet list
+    // This is run whenever the page is loaded to make sure we have a current pet list
     created: function() {
-// Use the vue-resource $http client to fetch data from the /pets route
         this.$http.get('/pets').then(function(response) {
-            this.pets = response.data.items ? response.data.items : []
+            this.pets = response.data.items? response.data.items: []
+        })
+
+        this.$http.get('/owners').then(function(response) {
+            this.owners = response.data.owners? response.data.owners: []
         })
     },
 
@@ -23,7 +28,7 @@ new Vue({
                 return
             }
 
- // Post the new pet to the /pets route using the $http client
+             // Post the new pet to the /pets route using the $http client
             this.$http.put('/pets', this.newPet).success(function(response) {
                 this.newPet.id = response.created
                 this.pets.push(this.newPet)
@@ -35,8 +40,8 @@ new Vue({
             });
         },
 
+        // Use the $http client to delete a pet by its id
         deletePet: function(index) {
- // Use the $http client to delete a pet by its id
             this.$http.delete('/pets/' + this.pets[index].id).success(function(response) {
                 this.pets.splice(index, 1)
                 console.log("Pet deleted!")

@@ -4,21 +4,23 @@ import (
 	"database/sql"
 )
 
+// Pet struct is used to hold pet data in json to pass to the rpont end
 type Pet struct {
-	ID      int    `json:"id"`
-	Name    string `json:"name"`
-	Type    string `json:"type"`
-	OwnerID int    `json:"ownerId"`
+	ID        int    `json:"id"`
+	Name      string `json:"name"`
+	Type      string `json:"type"`
+	OwnerName string `json:"ownerName"`
+	OwnerID   int    `json:"ownerId"`
 }
 
+// PetCollection is a collection of pet structs
 type PetCollection struct {
-	// TODO: change this to pets from items =============================================
 	Pets []Pet `json:"items"`
 }
 
 // GetPets gets all pets from database
 func GetPets(db *sql.DB) PetCollection {
-	sql := "SELECT * FROM pets"
+	sql := "SELECT * FROM pets JOIN owners USING(owner_id)"
 
 	rows, err := db.Query(sql)
 
@@ -31,7 +33,7 @@ func GetPets(db *sql.DB) PetCollection {
 	result := PetCollection{}
 	for rows.Next() {
 		pet := Pet{}
-		err2 := rows.Scan(&pet.ID, &pet.OwnerID, &pet.Name, &pet.Type)
+		err2 := rows.Scan(&pet.OwnerID, &pet.ID, &pet.Name, &pet.Type, &pet.OwnerName)
 
 		if err2 != nil {
 			panic(err2)

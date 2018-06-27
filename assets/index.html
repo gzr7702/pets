@@ -25,11 +25,15 @@
     <body>
         <div class="container">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-12" style='background-color: blue'>
                     <h2>Ukraine Pet Swap</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
                     <ul class="list-group">
                         <li class="list-group-item" v-for="pet in pets">
-                            {{ pet.name }} the {{ pet.type }}
+                            {{ pet.name }} the {{ pet.type }} owned by {{ pet.ownerName }}
                             <span class="pull-right">
                                 <button class="btn btn-xs btn-danger" v-on:click="deletePet($index)">
                                     <i class="fa fa-trash-o" aria-hidden="true"></i>
@@ -37,13 +41,24 @@
                             </span>
                         </li>
                     </ul>
+
+                    <h3>Add a new pet</h3>
                     <div class="input-group">
                         <input type="text" class="form-control" placeholder="New Pet Name" v-model="newPet.name">
                         <input type="text" class="form-control" placeholder="Type of Animal" v-model="newPet.type">
+
+                        Owner:
+                        <select v-model="newPet.ownerId">
+                            <option v-for="owner in owners" v-bind:value="owner.id">
+                                {{ owner.name}}
+                            </option>
+                        </select>
+
                         <span class="input-group-btn">
                             <button class="btn btn-primary" type="button" v-on:click="createPet">Create</button>
                         </span>
                     </div><!-- /input-group -->
+
                 </div>
             </div>
         </div>

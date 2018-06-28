@@ -1,1 +1,1 @@
-A web app that can help you buy some pets from the Ukraine.
+A basic web app consisting of a go, echo and vuejs stack.

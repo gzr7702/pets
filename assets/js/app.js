@@ -12,10 +12,12 @@ new Vue({
 
     // This is run whenever the page is loaded to make sure we have a current pet list
     created: function() {
+        // Get pets for pet list
         this.$http.get('/pets').then(function(response) {
             this.pets = response.data.items? response.data.items: []
         })
 
+        // Get list of owners to poplulate the select dropdown
         this.$http.get('/owners').then(function(response) {
             this.owners = response.data.owners? response.data.owners: []
         })

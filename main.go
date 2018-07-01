@@ -11,7 +11,6 @@ import (
 )
 
 func main() {
-	// paths
 	appRoot := "/home/rob/go/src/github.com/gzr7702/pets"
 
 	indexPath := path.Join(appRoot, "assets/index.html")

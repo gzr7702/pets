@@ -71,8 +71,8 @@
                 <div class="col-md-2"></div>
                 <div class="col-md-4">
                     Owner:
-                    <select v-model="newPet.ownerId">
-                        <option v-for="owner in owners" v-bind:value="owner.id">
+                    <select v-model="newPet.ownerName">
+                        <option v-for="owner in owners" v-bind:value="owner.name">
                             {{ owner.name}}
                         </option>
                     </select>

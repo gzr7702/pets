@@ -58,6 +58,26 @@ func PutOwner(db *sql.DB, name string) (int64, error) {
 	return result.LastInsertId()
 }
 
+// UpdateOwnerName updates a single pet from the database
+func UpdateOwnerName(db *sql.DB, id int, name string) (int64, error) {
+	sql := "UPDATE owners SET name = $2 WHERE owner_id = $1"
+
+	stmt, err := db.Prepare(sql)
+	if err != nil {
+		panic(err)
+	}
+
+	defer stmt.Close()
+
+	result, err2 := stmt.Exec(id, name)
+
+	if err2 != nil {
+		panic(err2)
+	}
+
+	return result.RowsAffected()
+}
+
 // DeleteOwner deletes a single pet from the database
 func DeleteOwner(db *sql.DB, id int) (int64, error) {
 	sql := "DELETE FROM owners WHERE owner_id = $1"

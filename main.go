@@ -36,6 +36,7 @@ func main() {
 	// owner routes
 	e.GET("/owners", handlers.GetOwners(db))
 	e.POST("/owners", handlers.PutOwner(db))
+	e.PUT("/owners/:id/name/:name", handlers.UpdateOwnerName(db))
 	e.DELETE("/owners/:id", handlers.DeleteOwner(db))
 
 	// start the web server

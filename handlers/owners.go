@@ -43,6 +43,25 @@ func PutOwner(db *sql.DB) echo.HandlerFunc {
 	}
 }
 
+// UpdateOwnerName endpoint
+func UpdateOwnerName(db *sql.DB) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		id, _ := strconv.Atoi(c.Param("id"))
+		name := c.Param("name")
+
+		// use model to update pet
+		_, err := models.UpdateOwnerName(db, id, name)
+		// return JSON response if successful
+		if err == nil {
+			return c.JSON(http.StatusOK, H{
+				"updated": id,
+			})
+		} else {
+			return err
+		}
+	}
+}
+
 // DeleteOwner endpoint
 func DeleteOwner(db *sql.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {

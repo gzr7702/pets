@@ -31,7 +31,7 @@ new Vue({
             }
 
              // Post the new pet to the /pets route using the $http client
-            this.$http.put('/pets', this.newPet).success(function(response) {
+            this.$http.post('/pets', this.newPet).success(function(response) {
                 this.newPet.id = response.created
                 this.pets.push(this.newPet)
                 console.log("Pet created!")

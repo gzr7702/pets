@@ -43,8 +43,8 @@ func GetPets(db *sql.DB) PetCollection {
 	return result
 }
 
-// PutPet puts a pet into database
-func PutPet(db *sql.DB, name string, animalType string, ownerID int) (int64, error) {
+// CreatePet creates a pet into database
+func CreatePet(db *sql.DB, name string, animalType string, ownerID int) (int64, error) {
 	sql := "INSERT INTO pets(name, animal_type, owner_id) VALUES($1, $2, $3)"
 
 	stmt, err := db.Prepare(sql)
@@ -67,6 +67,46 @@ func PutPet(db *sql.DB, name string, animalType string, ownerID int) (int64, err
 	}
 
 	return result.LastInsertId()
+}
+
+// UpdatePetName updates a single pet from the database
+func UpdatePetName(db *sql.DB, id int, name string) (int64, error) {
+	sql := "UPDATE pets SET name = $2 WHERE pet_id = $1"
+
+	stmt, err := db.Prepare(sql)
+	if err != nil {
+		panic(err)
+	}
+
+	defer stmt.Close()
+
+	result, err2 := stmt.Exec(id, name)
+
+	if err2 != nil {
+		panic(err2)
+	}
+
+	return result.RowsAffected()
+}
+
+// UpdatePetOwner updates a single pet from the database
+func UpdatePetOwner(db *sql.DB, id int, ownerId int) (int64, error) {
+	sql := "UPDATE pets SET owner_id = $2 WHERE pet_id = $1"
+
+	stmt, err := db.Prepare(sql)
+	if err != nil {
+		panic(err)
+	}
+
+	defer stmt.Close()
+
+	result, err2 := stmt.Exec(id, ownerId)
+
+	if err2 != nil {
+		panic(err2)
+	}
+
+	return result.RowsAffected()
 }
 
 // DeletePet deletes a single pet from the database

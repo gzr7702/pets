@@ -19,8 +19,8 @@ func GetPets(db *sql.DB) echo.HandlerFunc {
 	}
 }
 
-// PutPet endpoint
-func PutPet(db *sql.DB) echo.HandlerFunc {
+// CreatePet endpoint
+func CreatePet(db *sql.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// create a new pet
 		var pet models.Pet
@@ -29,7 +29,7 @@ func PutPet(db *sql.DB) echo.HandlerFunc {
 		c.Bind(&pet)
 
 		//Add a new pet using model
-		id, err := models.PutPet(db, pet.Name, pet.Type, pet.OwnerID)
+		id, err := models.CreatePet(db, pet.Name, pet.Type, pet.OwnerID)
 
 		// return JSON if successful
 		// LastInertId available error is a bug in postgres driver. Ignore it
@@ -42,6 +42,44 @@ func PutPet(db *sql.DB) echo.HandlerFunc {
 			return err
 		}
 
+	}
+}
+
+// UpdatePetName endpoint
+func UpdatePetName(db *sql.DB) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		id, _ := strconv.Atoi(c.Param("id"))
+		name := c.Param("name")
+
+		// use model to update pet
+		_, err := models.UpdatePetName(db, id, name)
+		// return JSON response if successful
+		if err == nil {
+			return c.JSON(http.StatusOK, H{
+				"updated": id,
+			})
+		} else {
+			return err
+		}
+	}
+}
+
+// UpdatePetOwner endpoint
+func UpdatePetOwner(db *sql.DB) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		id, _ := strconv.Atoi(c.Param("id"))
+		ownerID, _ := strconv.Atoi(c.Param("ownerid"))
+
+		// use model to update pet
+		_, err := models.UpdatePetOwner(db, id, ownerID)
+		// return JSON response if successful
+		if err == nil {
+			return c.JSON(http.StatusOK, H{
+				"updated": id,
+			})
+		} else {
+			return err
+		}
 	}
 }
 

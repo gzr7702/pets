@@ -28,12 +28,14 @@ func main() {
 
 	// pet routes
 	e.GET("/pets", handlers.GetPets(db))
-	e.PUT("/pets", handlers.PutPet(db))
+	e.POST("/pets", handlers.CreatePet(db))
+	e.PUT("/pets/:id/name/:name", handlers.UpdatePetName(db))
+	e.PUT("/pets/:id/owner/:ownerid", handlers.UpdatePetOwner(db))
 	e.DELETE("/pets/:id", handlers.DeletePet(db))
 
 	// owner routes
 	e.GET("/owners", handlers.GetOwners(db))
-	e.PUT("/owners", handlers.PutOwner(db))
+	e.POST("/owners", handlers.PutOwner(db))
 	e.DELETE("/owners/:id", handlers.DeleteOwner(db))
 
 	// start the web server
